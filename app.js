@@ -2,6 +2,15 @@ const CONFIG = {
   SHEET_ID: "1wQsRlecyCphDCQ5DTFzGnJGwJN5NsDJK",
   PRODUCTS_SHEET: "Products",
   VIDEOS_SHEET: "Videos",
+  FEATURED_VIDEOS: [
+    {
+      id: "FEATURED-001",
+      title: "VAAMS ITALIAN",
+      video_url: "https://drive.google.com/file/d/1xi9w6-DxfY8hFH1LVlmiWOFwiWexjYaL/view?usp=drive_link",
+      thumbnail_url: "",
+      active: true
+    }
+  ],
   UPI_ID: "vaams88888.ibz@icici",
   UPI_NAME: "VAAMS Italian",
   PAYMENT_KEY_HASH: "ad6113dc67594b2be69649d90e530e9ec58becc9c3d511705a0730adca0d653d"
@@ -59,7 +68,10 @@ async function initializeVideos() {
   } else {
     status.textContent = "Add video links in the included catalogue workbook, then connect its Google Sheet ID in app.js.";
   }
-  renderVideos(videos.filter(video => truthy(video.active)));
+  const activeVideos = [...CONFIG.FEATURED_VIDEOS, ...videos.filter(video => truthy(video.active))]
+    .filter((video, index, items) => items.findIndex(item => item.video_url === video.video_url) === index)
+    .filter(video => getYouTubeId(video.video_url) || getGoogleDriveId(video.video_url) || isDirectVideoUrl(video.video_url));
+  renderVideos(activeVideos);
 }
 
 function markActivePage() {
@@ -126,14 +138,17 @@ function renderVideos(videos) {
   }
   grid.innerHTML = videos.map(video => {
     const youtubeId = getYouTubeId(video.video_url);
-    const directVideo = isDirectVideoUrl(video.video_url);
+    const driveId = getGoogleDriveId(video.video_url);
+    const directUrl = driveId ? `https://drive.google.com/uc?export=download&id=${driveId}` : video.video_url;
+    const directVideo = driveId || isDirectVideoUrl(video.video_url);
     const media = youtubeId
-      ? `<iframe src="https://www.youtube-nocookie.com/embed/${youtubeId}" title="${escapeHtml(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+      ? `<iframe src="https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0" title="${escapeHtml(video.title)}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`
       : directVideo
-        ? `<video controls preload="metadata" ${video.thumbnail_url ? `poster="${escapeHtml(video.thumbnail_url)}"` : ""}><source src="${escapeHtml(video.video_url)}">Your browser does not support this video.</video>`
+        ? `<video class="story-video" autoplay muted loop playsinline preload="metadata" ${video.thumbnail_url ? `poster="${escapeHtml(video.thumbnail_url)}"` : ""}><source src="${escapeHtml(directUrl)}" type="video/mp4">Your browser does not support this video.</video><button class="story-sound" type="button" aria-label="Toggle video sound"><i class="fa-solid fa-volume-xmark"></i></button>`
         : `<a class="video-link-card" href="${escapeHtml(video.video_url)}" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i><strong>Open video channel or link</strong><span>Use an individual YouTube video link to play it directly on this page.</span></a>`;
-    return `<article class="video-card">${media}<div class="video-copy"><h3>${escapeHtml(video.title || "VAAMS Italian Video")}</h3><p>${escapeHtml(video.description || "")}</p></div></article>`;
+    return `<article class="video-card">${media}<div class="video-copy"><h3>${escapeHtml(video.title || "VAAMS Italian Story")}</h3></div></article>`;
   }).join("");
+  setupStoryCarousel();
 }
 
 function getYouTubeId(url) {
@@ -141,9 +156,29 @@ function getYouTubeId(url) {
   return match ? match[1] : "";
 }
 
+function getGoogleDriveId(url) {
+  const match = String(url || "").match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/);
+  return match ? match[1] : "";
+}
+
 function isDirectVideoUrl(url) {
   const value = String(url || "");
   return !/example\.com/i.test(value) && /\.(mp4|webm|ogg|mov)(?:[?#].*)?$/i.test(value);
+}
+
+function setupStoryCarousel() {
+  const track = document.querySelector("#video-grid");
+  const previous = document.querySelector(".story-prev");
+  const next = document.querySelector(".story-next");
+  if (!track || !previous || !next) return;
+  const move = direction => track.scrollBy({ left: direction * Math.min(track.clientWidth * .8, 820), behavior: "smooth" });
+  previous.addEventListener("click", () => move(-1));
+  next.addEventListener("click", () => move(1));
+  track.querySelectorAll(".story-sound").forEach(button => button.addEventListener("click", () => {
+    const video = button.parentElement.querySelector("video");
+    video.muted = !video.muted;
+    button.innerHTML = `<i class="fa-solid ${video.muted ? "fa-volume-xmark" : "fa-volume-high"}"></i>`;
+  }));
 }
 
 function renderCategories(products) {
