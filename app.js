@@ -126,9 +126,12 @@ function renderVideos(videos) {
   }
   grid.innerHTML = videos.map(video => {
     const youtubeId = getYouTubeId(video.video_url);
+    const directVideo = isDirectVideoUrl(video.video_url);
     const media = youtubeId
       ? `<iframe src="https://www.youtube-nocookie.com/embed/${youtubeId}" title="${escapeHtml(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-      : `<video controls preload="metadata" ${video.thumbnail_url ? `poster="${escapeHtml(video.thumbnail_url)}"` : ""}><source src="${escapeHtml(video.video_url)}">Your browser does not support this video.</video>`;
+      : directVideo
+        ? `<video controls preload="metadata" ${video.thumbnail_url ? `poster="${escapeHtml(video.thumbnail_url)}"` : ""}><source src="${escapeHtml(video.video_url)}">Your browser does not support this video.</video>`
+        : `<a class="video-link-card" href="${escapeHtml(video.video_url)}" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i><strong>Open video channel or link</strong><span>Use an individual YouTube video link to play it directly on this page.</span></a>`;
     return `<article class="video-card">${media}<div class="video-copy"><h3>${escapeHtml(video.title || "VAAMS Italian Video")}</h3><p>${escapeHtml(video.description || "")}</p></div></article>`;
   }).join("");
 }
@@ -136,6 +139,11 @@ function renderVideos(videos) {
 function getYouTubeId(url) {
   const match = String(url || "").match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
   return match ? match[1] : "";
+}
+
+function isDirectVideoUrl(url) {
+  const value = String(url || "");
+  return !/example\.com/i.test(value) && /\.(mp4|webm|ogg|mov)(?:[?#].*)?$/i.test(value);
 }
 
 function renderCategories(products) {
