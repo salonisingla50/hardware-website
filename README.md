@@ -1,6 +1,6 @@
-# VAAMS Italian Website
+# VAAMS ITALIAN Website
 
-Five-page static website using the VAAMS Italian green-and-white brand identity.
+Five-page static website using the VAAMS ITALIAN green-and-white brand identity.
 
 ## Pages
 

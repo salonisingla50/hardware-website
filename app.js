@@ -12,7 +12,7 @@ const CONFIG = {
     }
   ],
   UPI_ID: "vaams88888.ibz@icici",
-  UPI_NAME: "VAAMS Italian",
+  UPI_NAME: "VAAMS ITALIAN",
   PAYMENT_KEY_HASH: "ad6113dc67594b2be69649d90e530e9ec58becc9c3d511705a0730adca0d653d"
 };
 
@@ -84,7 +84,7 @@ function markActivePage() {
 }
 
 function hydrateSharedLinks() {
-  const whatsapp = `https://wa.me/${CONTACT.digits}?text=${encodeURIComponent("Hello VAAMS Italian, I would like to enquire about your products.")}`;
+  const whatsapp = `https://wa.me/${CONTACT.digits}?text=${encodeURIComponent("Hello VAAMS ITALIAN, I would like to enquire about your products.")}`;
   document.querySelectorAll("[data-phone]").forEach(el => {
     el.textContent = CONTACT.phone;
     if (el.tagName === "A") el.href = `tel:+${CONTACT.digits}`;
@@ -152,7 +152,7 @@ function renderVideos(videos) {
       : directVideo
         ? `<video class="story-video" autoplay muted loop playsinline preload="metadata" ${video.thumbnail_url ? `poster="${escapeHtml(video.thumbnail_url)}"` : ""}><source src="${escapeHtml(directUrl)}" type="video/mp4">Your browser does not support this video.</video><button class="story-sound" type="button" aria-label="Toggle video sound"><i class="fa-solid fa-volume-xmark"></i></button>`
         : `<a class="video-link-card" href="${escapeHtml(video.video_url)}" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i><strong>Open video channel or link</strong><span>Use an individual YouTube video link to play it directly on this page.</span></a>`;
-    return `<article class="video-card">${media}<div class="video-copy"><h3>${escapeHtml(video.title || "VAAMS Italian Story")}</h3></div></article>`;
+    return `<article class="video-card">${media}<div class="video-copy"><h3>${escapeHtml(video.title || "VAAMS ITALIAN Story")}</h3></div></article>`;
   }).join("");
   setupStoryCarousel();
 }
@@ -246,7 +246,7 @@ function initializePayment() {
     const entered = document.querySelector("#payment-key").value;
     const hash = await sha256(entered);
     if (hash !== CONFIG.PAYMENT_KEY_HASH) {
-      status.textContent = "Incorrect payment key. Please call VAAMS Italian for access.";
+      status.textContent = "Incorrect payment key. Please call VAAMS ITALIAN for access.";
       reveal.classList.remove("visible");
       return;
     }
@@ -273,7 +273,7 @@ function initializeContactForm() {
   document.querySelector("#contact-form").addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const message = `Hello VAAMS Italian,%0A%0AName: ${encodeURIComponent(form.get("name"))}%0APhone: ${encodeURIComponent(form.get("phone"))}%0ARequirement: ${encodeURIComponent(form.get("message"))}`;
+    const message = `Hello VAAMS ITALIAN,%0A%0AName: ${encodeURIComponent(form.get("name"))}%0APhone: ${encodeURIComponent(form.get("phone"))}%0ARequirement: ${encodeURIComponent(form.get("message"))}`;
     window.open(`https://wa.me/${CONTACT.digits}?text=${message}`, "_blank", "noopener");
   });
 }
