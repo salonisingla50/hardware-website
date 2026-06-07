@@ -19,10 +19,12 @@ const CONFIG = {
 const CONTACT = {
   phone: "+91 95170 83300",
   digits: "919517083300",
+  salesPhone: "+91 93570 40000",
+  salesDigits: "919357040000",
   email: "vaamsitalian@gmail.com",
   instagram: "https://www.instagram.com/vaamsitalian.in?igsh=MmI5aXltNXdoZmll&utm_source=qr",
   youtube: "https://youtube.com/@vaamsitalian?si=cXd7yQvolP5HIau4",
-  directions: "https://www.google.com/maps?gs_lcrp=EgZjaHJvbWUqDQgBEC4YrwEYxwEYgAQyBggAEEUYOTINCAEQLhivARjHARiABDIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIJCAcQABgKGIAEMgcICBAAGIAE0gEIMjExOGowajeoAgCwAgA&um=1&ie=UTF-8&fb=1&gl=in&sa=X&geocode=KSlPRH6JMxc5MU7Y4hiMsLfe&daddr=Dr+Mela+Ram+Rd,+near+SBI+Bank,+New+Shakti+Nagar,+Bathinda,+Punjab+151001"
+  directions: "https://www.google.com/maps/dir/?api=1&destination=Dr.+Melaram+Road,+Nr.+SBI+Bank,+Bathinda,+Punjab+151001"
 };
 
 const DEMO_PRODUCTS = [
@@ -90,6 +92,10 @@ function hydrateSharedLinks() {
   document.querySelectorAll("[data-email]").forEach(el => {
     el.textContent = CONTACT.email;
     if (el.tagName === "A") el.href = `mailto:${CONTACT.email}`;
+  });
+  document.querySelectorAll("[data-sales-phone]").forEach(el => {
+    el.textContent = CONTACT.salesPhone;
+    if (el.tagName === "A") el.href = `tel:+${CONTACT.salesDigits}`;
   });
   document.querySelectorAll("[data-whatsapp]").forEach(el => el.href = whatsapp);
   document.querySelectorAll("[data-instagram]").forEach(el => el.href = CONTACT.instagram);
@@ -168,9 +174,13 @@ function isDirectVideoUrl(url) {
 
 function setupStoryCarousel() {
   const track = document.querySelector("#video-grid");
+  const shell = document.querySelector(".stories-shell");
   const previous = document.querySelector(".story-prev");
   const next = document.querySelector(".story-next");
   if (!track || !previous || !next) return;
+  const singleStory = track.querySelectorAll(".video-card").length === 1;
+  track.classList.toggle("single-story", singleStory);
+  shell?.classList.toggle("single-story", singleStory);
   const move = direction => track.scrollBy({ left: direction * Math.min(track.clientWidth * .8, 820), behavior: "smooth" });
   previous.addEventListener("click", () => move(-1));
   next.addEventListener("click", () => move(1));
