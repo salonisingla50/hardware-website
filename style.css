@@ -51,16 +51,16 @@ p { margin: 0; }
   padding: 11px 19px;
   border: 1px solid transparent;
   border-radius: var(--radius);
-  color: var(--charcoal);
+  color: #fff;
   background: var(--green);
   font-weight: 900;
   transition: .2s ease;
 }
 .btn:hover { background: var(--green-dark); color: #fff; transform: translateY(-1px); }
-.btn-outline { border-color: var(--green); background: transparent; }
-.btn-outline:hover { background: var(--green); color: var(--charcoal); }
+.btn-outline { border-color: var(--green); background: transparent; color: var(--green-dark); }
+.btn-outline:hover { background: var(--green); color: #fff; }
 .btn-white { background: #fff; color: var(--charcoal); }
-.btn-white:hover { background: var(--green); color: var(--charcoal); }
+.btn-white:hover { background: var(--green); color: #fff; }
 
 .site-header {
   position: sticky;
@@ -141,10 +141,11 @@ p { margin: 0; }
 .usp-icon, .feature-icon {
   display: grid; place-items: center; flex: 0 0 auto;
   width: 48px; height: 48px; border-radius: 50%;
-  background: var(--green); color: var(--charcoal); font-size: 1.25rem;
+  background: var(--green); color: #fff; font-size: 1.25rem;
 }
 .usp-card strong { display: block; font-size: 1.45rem; }
 .usp-card span { color: var(--muted); }
+.usp-card .usp-icon { color: #fff; }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
 .brand-showcase { overflow: hidden; background: var(--green-soft); border-radius: var(--radius); }
 .brand-showcase img { display: block; width: 100%; height: auto; }
@@ -177,7 +178,7 @@ p { margin: 0; }
   min-height: 38px; padding: 7px 14px; border: 1px solid var(--line);
   border-radius: 999px; background: #fff; font-weight: 800;
 }
-.category-tab.active, .category-tab:hover { border-color: var(--green); background: var(--green); }
+.category-tab.active, .category-tab:hover { border-color: var(--green); background: var(--green); color: #fff; }
 .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .product-card { overflow: hidden; box-shadow: none; }
 .product-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--green-soft); }
@@ -196,7 +197,15 @@ p { margin: 0; }
 .unlock-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
 .payment-reveal { display: none; text-align: center; }
 .payment-reveal.visible { display: grid; gap: 18px; }
-.payment-reveal img { width: 240px; height: 240px; margin: 0 auto; border: 12px solid var(--green-soft); }
+.payment-reveal img { width: min(240px, 100%); height: auto; aspect-ratio: 1; margin: 0 auto; border: 12px solid var(--green-soft); }
+.upi-id-row { overflow-wrap: anywhere; }
+.bank-details { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--green-soft); text-align: left; }
+.bank-details h3 { margin-bottom: 14px; color: var(--green-dark); }
+.bank-details dl { display: grid; gap: 9px; margin: 0; }
+.bank-details dl div { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px; padding-bottom: 9px; border-bottom: 1px solid var(--line); }
+.bank-details dl div:last-child { padding-bottom: 0; border-bottom: 0; }
+.bank-details dt { color: var(--muted); font-weight: 700; }
+.bank-details dd { min-width: 0; margin: 0; overflow-wrap: anywhere; font-weight: 900; }
 .payment-note { padding: 14px; border-left: 4px solid var(--green); background: var(--green-soft); color: var(--muted); }
 .status-message { min-height: 24px; color: #a02727; font-weight: 800; }
 
@@ -206,7 +215,7 @@ p { margin: 0; }
 .contact-item i { color: var(--green-dark); margin-top: 5px; }
 .socials { display: flex; gap: 10px; margin-top: 24px; }
 .social-link { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--charcoal); color: #fff; }
-.social-link:hover { background: var(--green); color: var(--charcoal); }
+.social-link:hover { background: var(--green); color: #fff; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .field.full { grid-column: 1 / -1; }
 label { display: block; margin-bottom: 6px; font-size: .88rem; font-weight: 800; }
@@ -235,18 +244,36 @@ label { display: block; margin-bottom: 6px; font-size: .88rem; font-weight: 800;
   .nav-links.open { display: flex; }
   .nav-links a { padding: 11px 0; }
   .usp-grid, .feature-grid, .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .split, .contact-grid, .payment-grid { grid-template-columns: 1fr; }
+  .split, .contact-grid, .payment-grid, .payment-grid:has(.payment-reveal.visible) { grid-template-columns: minmax(0, 1fr); }
+  .payment-grid:has(.payment-reveal.visible) { max-width: 680px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 620px) {
-  .section { padding: 64px 0; }
-  .logo { width: 145px; }
-  .hero { min-height: 700px; }
+  .container { width: min(100% - 24px, 1140px); }
+  .section { padding: 54px 0; }
+  .page-hero { padding: 54px 0; }
+  h1 { font-size: clamp(2.35rem, 12vw, 3.25rem); }
+  h2 { font-size: clamp(1.85rem, 9vw, 2.6rem); }
+  .nav { min-height: 68px; }
+  .logo { width: 132px; height: 52px; }
+  .nav-links { inset-block-start: 68px; }
+  .hero { min-height: auto; }
+  .hero-content { padding: 74px 0; }
+  .hero-actions, .hero-actions .btn { width: 100%; }
   .usp-grid { margin-top: 0; padding-top: 18px; }
   .usp-grid, .feature-grid, .product-grid, .footer-grid, .form-grid { grid-template-columns: 1fr; }
+  .usp-card { padding: 20px; }
   .video-grid { grid-template-columns: 1fr; }
   .catalog-toolbar, .unlock-row { grid-template-columns: 1fr; }
+  .panel { min-width: 0; padding: 20px; }
+  .payment-grid { width: min(100% - 20px, 1140px); }
+  .payment-reveal.visible { gap: 15px; }
+  .payment-reveal .btn, .unlock-row .btn { width: 100%; }
+  .bank-details { padding: 16px; }
+  .bank-details dl div { grid-template-columns: 1fr; gap: 1px; }
+  .cta-inner .btn { width: 100%; }
   .cta-inner { align-items: flex-start; flex-direction: column; }
   .field.full { grid-column: auto; }
+  .floating-whatsapp { right: 14px; bottom: 14px; width: 52px; height: 52px; }
 }
