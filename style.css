@@ -146,8 +146,8 @@ p { margin: 0; }
 .usp-card strong { display: block; font-size: 1.45rem; }
 .usp-card span { color: var(--muted); }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-.brand-showcase { min-height: 400px; display: grid; place-items: center; padding: 45px; background: var(--green-soft); border-radius: var(--radius); }
-.brand-showcase img { width: min(520px, 100%); }
+.brand-showcase { overflow: hidden; background: var(--green-soft); border-radius: var(--radius); }
+.brand-showcase img { display: block; width: 100%; height: auto; }
 .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .feature-card { padding: 24px; box-shadow: none; }
 .feature-card .feature-icon { margin-bottom: 18px; }
