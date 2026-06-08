@@ -193,7 +193,7 @@ function renderProducts(products) {
   }
   grid.innerHTML = products.map(product => `
     <article class="product-card">
-      <img src="${escapeHtml(product.image_url || "assets/vaams-logo.png")}" alt="${escapeHtml(product.name)}" loading="lazy" onerror="this.src='assets/vaams-logo.png'">
+      <img src="${escapeHtml(product.image_url || "assets/vaams-logo-transparent.png")}" alt="${escapeHtml(product.name)}" loading="lazy" onerror="this.src='assets/vaams-logo-transparent.png'">
       <div class="product-content">
         <span class="product-category">${escapeHtml(product.category)}</span>
         <h3>${escapeHtml(product.name)}</h3>
