@@ -110,6 +110,9 @@ p { margin: 0; }
 .hero-brand { color: var(--green); }
 .page-hero { padding: 78px 0; background: var(--charcoal); color: #fff; }
 .page-hero .lead { margin-top: 16px; color: rgba(255,255,255,.78); }
+.compact-hero { padding: 44px 0; }
+.compact-hero h1 { font-size: clamp(2.2rem, 5vw, 4.1rem); }
+.gallery-section { padding-top: 42px; }
 
 .usp-grid, .feature-grid, .product-grid, .gallery-grid, .contact-grid, .payment-grid {
   display: grid;
@@ -261,6 +264,8 @@ label { display: block; margin-bottom: 6px; font-size: .88rem; font-weight: 800;
   .container { width: min(100% - 24px, 1140px); }
   .section { padding: 54px 0; }
   .page-hero { padding: 54px 0; }
+  .compact-hero { padding: 36px 0; }
+  .gallery-section { padding-top: 30px; }
   h1 { font-size: clamp(2.35rem, 12vw, 3.25rem); }
   h2 { font-size: clamp(1.85rem, 9vw, 2.6rem); }
   .nav { min-height: 68px; }
