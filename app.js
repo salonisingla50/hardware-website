@@ -2,6 +2,7 @@ const CONFIG = {
   SHEET_ID: "1wQsRlecyCphDCQ5DTFzGnJGwJN5NsDJK",
   PRODUCTS_SHEET: "Products",
   VIDEOS_SHEET: "Videos",
+  GALLERY_SHEET: "Gallery",
   UPI_ID: "vaams88888.ibz@icici",
   UPI_NAME: "VAAMS ITALIAN",
   PAYMENT_KEY_HASH: "ad6113dc67594b2be69649d90e530e9ec58becc9c3d511705a0730adca0d653d"
@@ -34,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-year]").forEach(el => el.textContent = new Date().getFullYear());
   if (document.querySelector("#product-grid")) initializeProducts();
   if (document.querySelector("#video-grid")) initializeVideos();
+  if (document.querySelector("#gallery-grid")) initializeGallery();
   if (document.querySelector("#payment-lock")) initializePayment();
   if (document.querySelector("#contact-form")) initializeContactForm();
 });
@@ -62,6 +64,33 @@ async function initializeVideos() {
     status.textContent = "Add video links in the included catalogue workbook, then connect its Google Sheet ID in app.js.";
   }
   renderVideos(videos.filter(video => truthy(video.active)));
+}
+
+async function initializeGallery() {
+  let galleryItems = [];
+  const status = document.querySelector("#gallery-status");
+  if (CONFIG.SHEET_ID) {
+    try {
+      galleryItems = await fetchSheetRows(CONFIG.GALLERY_SHEET);
+    } catch (error) {
+      try {
+        const products = await fetchProducts();
+        galleryItems = products.map(product => ({
+          title: product.name,
+          image_url: product.image_url,
+          category: product.category,
+          description: product.description,
+          active: product.in_stock
+        }));
+        status.textContent = "Showing product images. Add a Gallery tab to the sheet for a separate gallery.";
+      } catch (fallbackError) {
+        status.textContent = "Gallery images will appear here when the Gallery sheet is added and shared publicly.";
+      }
+    }
+  } else {
+    status.textContent = "Add image links in the Gallery tab, then connect its Google Sheet ID in app.js.";
+  }
+  renderGallery(galleryItems.filter(item => truthy(item.active) && item.image_url));
 }
 
 function markActivePage() {
@@ -154,6 +183,13 @@ function getGoogleDriveId(url) {
   return match ? match[1] : "";
 }
 
+function getImageUrl(url) {
+  const value = String(url || "").trim();
+  const driveId = getGoogleDriveId(value);
+  if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w2000`;
+  return value;
+}
+
 function isDirectVideoUrl(url) {
   const value = String(url || "");
   return !/example\.com/i.test(value) && /\.(mp4|webm|ogg|mov)(?:[?#].*)?$/i.test(value);
@@ -193,7 +229,7 @@ function renderProducts(products) {
   }
   grid.innerHTML = products.map(product => `
     <article class="product-card">
-      <img src="${escapeHtml(product.image_url || "assets/vaams-logo-transparent.png")}" alt="${escapeHtml(product.name)}" loading="lazy" onerror="this.src='assets/vaams-logo-transparent.png'">
+      <img src="${escapeHtml(getImageUrl(product.image_url) || "assets/vaams-logo-transparent.png")}" alt="${escapeHtml(product.name)}" loading="lazy" onerror="this.src='assets/vaams-logo-transparent.png'">
       <div class="product-content">
         <span class="product-category">${escapeHtml(product.category)}</span>
         <h3>${escapeHtml(product.name)}</h3>
@@ -202,6 +238,29 @@ function renderProducts(products) {
       </div>
     </article>
   `).join("");
+}
+
+function renderGallery(items) {
+  const grid = document.querySelector("#gallery-grid");
+  if (!items.length) {
+    grid.innerHTML = '<div class="catalog-status">No gallery images added yet.</div>';
+    return;
+  }
+  grid.innerHTML = items.map(item => {
+    const imageUrl = getImageUrl(item.image_url);
+    return `
+      <article class="gallery-card">
+        <a href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(item.title || "gallery image")}">
+          <img src="${escapeHtml(imageUrl || "assets/vaams-logo-transparent.png")}" alt="${escapeHtml(item.title || "VAAMS ITALIAN gallery image")}" loading="lazy" onerror="this.src='assets/vaams-logo-transparent.png'">
+        </a>
+        <div class="gallery-copy">
+          ${item.category ? `<span>${escapeHtml(item.category)}</span>` : ""}
+          <h3>${escapeHtml(item.title || "VAAMS ITALIAN")}</h3>
+          ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ""}
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function initializePayment() {

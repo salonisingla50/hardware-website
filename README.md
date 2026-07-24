@@ -7,6 +7,7 @@ Five-page static website using the VAAMS ITALIAN green-and-white brand identity.
 - `index.html` - Home
 - `about.html` - About
 - `products.html` - Searchable product catalogue
+- `gallery.html` - Image gallery from the catalogue sheet
 - `payment.html` - Key-locked UPI QR
 - `contact.html` - Contact details, social links, directions, and WhatsApp enquiry
 
@@ -33,6 +34,19 @@ id | name | category | image_url | description | in_stock
 ```
 
 The website intentionally contains no product pricing.
+
+## Gallery Images
+
+Add gallery images in a Google Sheet tab named `Gallery`:
+
+```text
+id | title | image_url | category | description | active
+```
+
+- Put a public image link in `image_url`.
+- Google Drive file links are converted automatically for display.
+- Set `active` to `TRUE` to show an image or `FALSE` to hide it.
+- If the `Gallery` tab is not available, the gallery page shows active product images from the `Products` tab.
 
 ## Home Page Videos
 
