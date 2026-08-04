@@ -179,15 +179,28 @@ function getYouTubeId(url) {
 }
 
 function getGoogleDriveId(url) {
-  const match = String(url || "").match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/);
-  return match ? match[1] : "";
+  const value = String(url || "");
+  const fileMatch = value.match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/);
+  if (fileMatch) return fileMatch[1];
+  const queryMatch = value.match(/[?&]id=([A-Za-z0-9_-]+)/);
+  return queryMatch ? queryMatch[1] : "";
 }
 
 function getImageUrl(url) {
   const value = String(url || "").trim();
   const driveId = getGoogleDriveId(value);
-  if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w2000`;
+  if (driveId) return `https://lh3.googleusercontent.com/d/${driveId}=w1600`;
   return value;
+}
+
+function getImageFallbackUrl(url) {
+  const driveId = getGoogleDriveId(url);
+  if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
+  return "assets/vaams-logo-transparent.png";
+}
+
+function imageFallbackScript(fallbackUrl) {
+  return `this.onerror=null;this.src='${escapeHtml(fallbackUrl)}'`;
 }
 
 function isDirectVideoUrl(url) {
@@ -229,7 +242,7 @@ function renderProducts(products) {
   }
   grid.innerHTML = products.map(product => `
     <article class="product-card">
-      <img src="${escapeHtml(getImageUrl(product.image_url) || "assets/vaams-logo-transparent.png")}" alt="${escapeHtml(product.name)}" loading="lazy" onerror="this.src='assets/vaams-logo-transparent.png'">
+      <img src="${escapeHtml(getImageUrl(product.image_url) || "assets/vaams-logo-transparent.png")}" alt="${escapeHtml(product.name)}" onerror="${imageFallbackScript(getImageFallbackUrl(product.image_url))}">
       <div class="product-content">
         <span class="product-category">${escapeHtml(product.category)}</span>
         <h3>${escapeHtml(product.name)}</h3>
@@ -251,7 +264,7 @@ function renderGallery(items) {
     return `
       <article class="gallery-card">
         <a href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(item.title || "gallery image")}">
-          <img src="${escapeHtml(imageUrl || "assets/vaams-logo-transparent.png")}" alt="${escapeHtml(item.title || "VAAMS ITALIAN gallery image")}" loading="lazy" onerror="this.src='assets/vaams-logo-transparent.png'">
+          <img src="${escapeHtml(imageUrl || "assets/vaams-logo-transparent.png")}" alt="${escapeHtml(item.title || "VAAMS ITALIAN gallery image")}" onerror="${imageFallbackScript(getImageFallbackUrl(item.image_url))}">
         </a>
         <div class="gallery-copy">
           ${item.category ? `<span>${escapeHtml(item.category)}</span>` : ""}
